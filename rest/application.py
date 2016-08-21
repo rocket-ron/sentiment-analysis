@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import Resource, Api
 import unittest
 import json
+from pymongo import MongoClient
 
 
 """
@@ -12,7 +13,7 @@ import json
         longitude
         radius (meters)
 
-    GET http://localhost:5000/sentiment?lat=40.7128N?lon=74.0059W?radius=5000
+    GET http://localhost:5000/sentiment?lat=40.7128?lon=74.0059?radius=5000
 
     The response is a JSON object with the following structure
 
@@ -52,8 +53,8 @@ api = Api(app)
 api.add_resource(Sentiment, '/')
 
 # run the app server
-# if __name__ == '__main__':
-#    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 """
@@ -104,5 +105,5 @@ class Sentiment(unittest.TestCase):
 
 
 # Run the unit tests
-if __name__ == '__main__':
-    unittest.main()
+#if __name__ == '__main__':
+#    unittest.main()

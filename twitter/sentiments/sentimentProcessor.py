@@ -3,9 +3,10 @@ from pymongo import MongoClient
 
 
 def process_tweet(tweet, host, port, db):
+    print ('processing...')
     if 'text' in tweet:
         print 'processing...'
-        mongo_client = MongoClient(host=host, port=port, db=db)
+        mongo_client = MongoClient(host=host, port=port)
         mongodb = mongo_client[db]
         tweet_text_blob = TextBlob(tweet['text'])
         result = dict(text=tweet['text'],

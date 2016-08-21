@@ -33,3 +33,8 @@
   sudo: yes
   service: name=mongod state=started
 
+- name: Create the tweet sentiment collection
+  shell: mongo tweets --eval "db.createCollection('sentiment')
+
+- name: Create the sentiment geospatial index
+  shell: mongo tweets --eval 'db.sentiment.createIndex({ coordinates: "2dsphere" })'

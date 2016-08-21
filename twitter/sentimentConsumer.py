@@ -51,7 +51,7 @@ consumer = KafkaConsumer('tweets',
 
 for message in consumer:
     try:
-        job = q.enqueue(process_tweet, args=(message, args.mongohost, args.mongoport, 'tweets'))
+        job = q.enqueue(process_tweet, args=(message.value, args.mongohost, args.mongoport, 'tweets'))
 
     except KeyboardInterrupt:
         consumer.close()

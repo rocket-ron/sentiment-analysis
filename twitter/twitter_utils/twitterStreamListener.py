@@ -28,8 +28,9 @@ class TwitterStreamListener(StreamListener):
             if not self.caughtInterrupt:
                 tweet = json.loads(data)
                 if self.geo_only and 'coordinates' in tweet and tweet['lang'] == 'en':
-                    self.serializer.write(tweet)
-                return True
+                    if tweet['coordinates'] is not None:
+                        self.serializer.write(tweet)
+                        return True
             else:
                 self.serializer.end()
                 return False
