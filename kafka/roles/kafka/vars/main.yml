@@ -1,0 +1,8 @@
+---
+kafka:
+  version: 0.10.0.1
+  url: http://apache.mirrors.pair.com/kafka/0.10.0.1/kafka_2.11-0.10.0.1.tgz
+  tgz: /tmp/kafka_2.11-0.10.0.1.tgz
+  untar_to: /usr/local/lib
+  symlink_to: /usr/local/lib/kafka_2.11-0.10.0.1
+  symlink: /usr/local/lib/kafka

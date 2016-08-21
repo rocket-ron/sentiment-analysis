@@ -1,0 +1,24 @@
+---
+# This Playbook runs all the common plays in the deployment
+- name: install 10Gen repo
+  template: src=10gen.repo.j2 dest=/etc/yum.repos.d/10gen.repo
+  sudo: yes
+
+- name: Create the mongod user
+  user: name=mongod comment="MongoD"
+  sudo: yes
+
+- name: Create the data directory for the namenode metadata
+  file: path={{ mongodb_datadir_prefix }} owner=mongod group=mongod state=directory
+  sudo: yes
+
+- name: Install all updates
+  yum: name=* state=latest
+  sudo: yes
+
+- name: Install the mongodb package
+  sudo: yes
+  yum: name={{ item }} state=installed
+  with_items:
+   - mongo-10gen
+   - mongo-10gen-server

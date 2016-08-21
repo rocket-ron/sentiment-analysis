@@ -1,0 +1,34 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "dummy"
+
+    config.vm.provider :aws do |aws, override|
+        aws.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
+        aws.access_key_id = ENV['AWS_ACCESS_KEY_ID']
+        aws.keypair_name = ENV['AWS_KEYPAIR_NAME']
+        aws.ami = 'ami-a2490dc2'
+        aws.region = "us-west-1"
+        aws.instance_type = 'm3.large'
+        aws.security_groups = "mongodb"
+        aws.iam_instance_profile_name = 'mongodb'
+
+        aws.tags = {
+            "Name" => "Kafka Instance",
+           }
+        aws.block_device_mapping = [{
+            'DeviceName' => '/dev/sda1',
+            'Ebs.VolumeSize' => 16,
+            'Ebs.VolumeType' => 'gp2' }]
+
+        override.ssh.username = "ec2-user"
+        override.ssh.private_key_path = ENV['PRIVATE_AWS_SSH_KEY_PATH']
+        override.nfs.functional = false
+    end
+
+    config.vm.provision "ansible" do |ansible|
+        # ansible.verbose = 'vvvv'
+        ansible.playbook = "kafka.yml"
+    end
+end

@@ -1,0 +1,35 @@
+---
+# This role deploys the mongod processes and sets up the replication set.
+
+- name: create data directory for mongodb
+  sudo: yes
+  file:
+    path={{ mongodb_datadir_prefix }}/mongo
+    state=directory
+    owner=mongod
+    group=mongod
+
+- name: create log directory for mongodb
+  sudo: yes
+  file:
+    path=/var/log/mongo
+    state=directory
+    owner=mongod
+    group=mongod
+
+- name: create run directory for mongodb
+  sudo: yes
+  file:
+    path=/var/run/mongo
+    state=directory
+    owner=mongod
+    group=mongod
+
+- name: Create the mongodb configuration file
+  sudo: yes
+  template: src=mongod.conf.j2 dest=/etc/mongod.conf
+
+- name: Start the mongodb service
+  sudo: yes
+  service: name=mongod state=started
+

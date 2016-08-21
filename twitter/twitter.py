@@ -3,6 +3,7 @@
 from twitter_utils.apikeys import apikeys
 from twitter_utils.twitterStreamListener import TwitterStreamListener
 from tweet_serializers.consoleTweetSerializer import ConsoleTweetSerializer
+from tweet_serializers.kafkaTweetSerializer import KafkaTweetSerializer
 import argparse
 import time
 
@@ -29,15 +30,28 @@ parser.add_argument('--sample',
                     action='store_true',
                     required=False,
                     help='Sample the Twitter stream')
+parser.add_argument('--serializer',
+                    choices=['console', 'kafka'],
+                    help='Where to send the tweets.'
+                    )
+parser.add_argument('--kafkahost',
+                    type=str,
+                    required=False,
+                    help='The host name of the Kafka broker if using Kafka serialization')
+parser.add_argument('--kafkaport',
+                    type=int,
+                    require=False,
+                    help='The port of the Kafka broker if using Kafka serialization')
 
 args = parser.parse_args()
 
-
-# fetchSize = 1500
-
-print "Writing tweets to console..."
-serializer = ConsoleTweetSerializer()
-fetchSize = 10
+if args.serializer == 'console':
+    print "Writing tweets to console..."
+    serializer = ConsoleTweetSerializer()
+    fetchSize = 10
+else:
+    print "Writing tweets to Kafka..."
+    serializer = KafkaTweetSerializer(host=args.kafkahost, port=args.kafkaport)
 
 startTime = time.time()
 

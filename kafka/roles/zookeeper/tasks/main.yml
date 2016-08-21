@@ -1,0 +1,56 @@
+---
+- name: Update all packages
+  yum:  name=* state=latest
+  sudo: yes
+
+- name: download oracle java8
+  command: "wget -q -O {{java.java_archive}} --no-cookies --no-check-certificate --header 'Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie' {{java.java8_download_url}} creates={{java.java_archive}}"
+  sudo: yes
+
+- name: upack Java8 archive
+  sudo: yes
+  unarchive:
+    src={{java.java_archive}}
+    dest={{java.java8_download_folder}}
+    copy=no
+
+- name: fix Java8 ownership
+  sudo: yes
+  file:
+    state=directory
+    path={{java.java_name}}
+    owner=root
+    group=root
+    recurse=yes
+
+- name: make java available for system
+  sudo: yes
+  command: 'alternatives --install "/usr/bin/java" "java" "{{java.java_name}}/bin/java" 2000'
+
+- name: cleanup
+  sudo: yes
+  file:
+    state=absent
+    path={{java.java_archive}}
+
+- name: Download ZooKeeper {{zookeeper.version}}
+  get_url: url={{zookeeper.url}} dest={{zookeeper.tgz}} timeout=60
+
+- name: Create the remote directory for ZooKeeper
+  sudo: yes
+  file: path={{zookeeper.untar_to}} state=directory mode=0755
+
+- name: Unarchive ZooKeeper
+  sudo: yes
+  unarchive: copy=no src={{zookeeper.tgz}} dest={{zookeeper.untar_to}}
+
+- name: Symlink to the ZooKeeper version
+  sudo: yes
+  file: path={{zookeeper.symlink}} src={{zookeeper.symlink_to}} state=link
+
+- name: Create the ZooKeeper configuration
+  sudo: yes
+  template: src=zoo.cfg.j2 dest={{zookeeper.symlink}}/conf/zoo.cfg
+  notify:
+    - stop zookeeper
+    - start zookeeper

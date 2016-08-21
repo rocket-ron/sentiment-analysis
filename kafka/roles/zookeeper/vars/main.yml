@@ -1,0 +1,15 @@
+---
+zookeeper:
+  version: 3.4.8
+  url: http://apache.cs.utah.edu/zookeeper/zookeeper-3.4.8/zookeeper-3.4.8.tar.gz
+  tgz:         /tmp/zookeeper-3.4.8.tar.gz
+  untar_to:    /usr/local/lib/
+  symlink_to:  /usr/local/lib/zookeeper-3.4.8
+  symlink:     /usr/local/lib/zookeeper
+
+java:
+  java8_download_url: 'http://download.oracle.com/otn-pub/java/jdk/8u102-b14/jdk-8u102-linux-x64.tar.gz'
+  java8_download_folder: /opt
+  java_name: '/opt/jdk1.8.0_102'
+  java_archive: '/opt/jdk-8u102-linux-x64.tar.gz'
+

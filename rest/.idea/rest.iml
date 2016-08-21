@@ -7,6 +7,8 @@
     <orderEntry type="library" name="R Skeletons" level="project" />
     <orderEntry type="library" name="R User Skeletons" level="project" />
     <orderEntry type="module" module-name="twitter" />
+    <orderEntry type="module" module-name="kafka" />
+    <orderEntry type="module" module-name="mongodb" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />

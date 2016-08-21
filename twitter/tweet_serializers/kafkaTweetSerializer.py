@@ -1,48 +1,22 @@
-import threading
-import logging
-import time
-
-from kafka import KafkaConsumer, KafkaProducer
+from kafka import KafkaProducer
+import json
 
 
-class Producer(threading.Thread):
-    daemon = True
+"""
 
-    def run(self):
-        producer = KafkaProducer(bootstrap_servers='localhost:9092')
+    Simple unbuffered Kafka Producer
 
-        while True:
-            producer.send('my-topic', b"test")
-            producer.send('my-topic', b"\xc2Hola, mundo!")
-            time.sleep(1)
+"""
 
+class KafkaTweetSerializer:
 
-class Consumer(threading.Thread):
-    daemon = True
+    _producer = None
 
-    def run(self):
-        consumer = KafkaConsumer(bootstrap_servers='localhost:9092',
-                                 auto_offset_reset='earliest')
-        consumer.subscribe(['my-topic'])
+    def __init__(self, host='localhost', port='9092'):
+        kafka_server = "{0}:{1}".format(host, str(port))
+        self._producer = KafkaProducer(bootstrap_servers=kafka_server,
+                                       value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
-        for message in consumer:
-            print (message)
-
-
-def main():
-    threads = [
-        Producer(),
-        Consumer()
-    ]
-
-    for t in threads:
-        t.start()
-
-    time.sleep(10)
-
-if __name__ == "__main__":
-    logging.basicConfig(
-        format='%(asctime)s.%(msecs)s:%(name)s:%(thread)d:%(levelname)s:%(process)d:%(message)s',
-        level=logging.INFO
-        )
-    main()
+    def write(self, message):
+        self._producer.send(topic='tweets', value=message)
+        self._producer.flush()
