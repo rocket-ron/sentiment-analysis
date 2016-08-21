@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
         aws.ami = 'ami-a2490dc2'
         aws.region = "us-west-1"
         aws.instance_type = 'm3.large'
-        aws.security_groups = "mongodb"
+        aws.security_groups = "sentiment"
         aws.iam_instance_profile_name = 'mongodb'
 
         aws.tags = {

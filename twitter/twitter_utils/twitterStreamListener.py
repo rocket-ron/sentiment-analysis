@@ -27,12 +27,16 @@ class TwitterStreamListener(StreamListener):
         with self._lock:
             if not self.caughtInterrupt:
                 tweet = json.loads(data)
-                if self.geo_only and 'coordinates' in tweet:
+                if self.geo_only and 'coordinates' in tweet and tweet['lang'] == 'en':
                     self.serializer.write(tweet)
                 return True
             else:
                 self.serializer.end()
                 return False
+
+    def on_status(self, status):
+        print status
+        return True
 
     def on_error(self, status_code):
         if status_code == 420:
@@ -48,6 +52,8 @@ class TwitterStreamListener(StreamListener):
         print "CTRL-C caught, closing..."
         with self._lock:
             self.caughtInterrupt = True
+            self.serializer.end()
+            self.disconnect()
 
     def track(self, track):
         self.twitterStream = Stream(self.auth, self)
@@ -62,3 +68,8 @@ class TwitterStreamListener(StreamListener):
         self.geo_only = True
         self.twitterStream = Stream(self.auth, self)
         self.twitterStream.filter(locations=locations)
+
+    def disconnect(self):
+        self.serializer.end()
+
+

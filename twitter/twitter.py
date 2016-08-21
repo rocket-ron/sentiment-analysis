@@ -40,7 +40,7 @@ parser.add_argument('--kafkahost',
                     help='The host name of the Kafka broker if using Kafka serialization')
 parser.add_argument('--kafkaport',
                     type=int,
-                    require=False,
+                    required=False,
                     help='The port of the Kafka broker if using Kafka serialization')
 
 args = parser.parse_args()
@@ -60,7 +60,10 @@ listener = TwitterStreamListener(serializer, apikeys[args.key])
 if args.sample:
     listener.sample()
 elif args.locations:
-    listener.locate(locations=[-180, -90, 180, 90])
+    try:
+        listener.locate(locations=[-180, -90, 180, 90])
+    except KeyboardInterrupt:
+        listener.disconnect()
 else:
     if args.track is not None:
         listener.track(args.track)
